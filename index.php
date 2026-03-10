@@ -1,7 +1,5 @@
 <?php
 
-use BcMath\Number;
-
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['btn_video1'])) {
         header('Location: https://www.youtube.com/watch?v=V5XjDpBhlLI');
         exit();
@@ -139,7 +137,7 @@ use BcMath\Number;
     <h2>Calculadora PHP</h2>
     <form method="POST">
         <p>1º número
-            <input type="number" name="num1" placeholder="0" required>
+            <input type="number" name="num1" min='0' step="any" placeholder="0" required>
         </p>
         <p>Operação 
             <select name="operacao">
@@ -152,7 +150,7 @@ use BcMath\Number;
             </select>
         </p>
         <p>2º número
-            <input type="number" name="num2" placeholder="0">
+            <input type="number" name="num2" min='0' step="any" placeholder="0">
         </p>
         <button type="submit" name="btn_calculadora">Calcular</button>
     </form>
@@ -219,6 +217,23 @@ use BcMath\Number;
                     break;
             }
             echo "<h3>Valor Convertido:" . number_format($resultado, 2, ",", ".") . $simbolo . "</h3>";
+        }
+    ?>
+    <h2>Verificação de idade</h2>
+    <form method="POST">
+        <input type="number" name="idade" placeholder="Digite sua idade" required>
+        <button type="submit" name="btn_idade">Enviar</button>
+    </form>
+    <?php
+        $idade = $_POST['idade'];
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['btn_idade'])) {
+                if ($idade > 18) {
+                    echo "<h3>Você é maior de idade</h3>";
+                } elseif ($idade <= 0) {
+                    echo "<span style='color:red;'>Idade inválida</span>";
+                } else {
+                    echo "<h3>Você é menor de idade</h3>";
+                }
         }
     ?>
 <script>
