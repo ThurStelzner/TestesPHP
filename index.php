@@ -251,6 +251,69 @@
             }
         }
     ?>
+    <h2>Gerador de tabuada</h2>
+    <form method="POST">
+        <input type="number" name="num" min="0" placeholder="0" required>
+        <button type="submit" name="btn_tabuada">Gerar</button>
+    </form>
+    <?php
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['btn_tabuada'])) {
+            $num = $_POST['num'];
+            $x = 0;
+            while ($x < 10){
+                $x += 1;
+                echo "<h3>$num x $x = " . $num*$x . "<br></h3>";
+            }
+        }
+    ?>
+    <h2>Contar até 0</h2>
+    <form method="POST">
+        <input type="number" name="num" min="0" required>
+        <select name="ordem">
+            <option value="0">Decrescente</option>
+            <option value="1">Crescente</option>
+        </select>
+        <button type="submit" name="btn_contagem">Contar</button>
+    </form>
+    <?php
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['btn_contagem'])) {
+            $num = $_POST['num'];
+            $orderm = $_POST['ordem'];
+            $x = 0;
+            if ($orderm == "0") {
+                while ($num >= 0) {
+                    echo "<h4>" . $num . "<br></h4>";
+                    $num -= 1;
+                }
+            } else {
+                while ($x <= $num) {
+                    echo "<h4>" . $x . "<br></h4>";
+                    $x += 1;
+                }
+            }
+        }
+    ?>
+    <h2>Sortear Número</h2>
+    <form method="POST">
+        <p>Minimo:
+            <input type="number" min="1" placeholder="1" name="min" required>
+        </p>
+        <p>Máximo:
+            <input type="number" min="2" placeholder="10" name="max" required>
+        </p>
+        <button type="submit" name="btn_sortear">Sortear</button>
+    </form>
+    <?php
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['btn_sortear'])) {
+            $min = $_POST['min'];
+            $max = $_POST['max'];   
+            if ($min > $max) {
+                echo "<span style='color:red;'>Mínimo não pode ser maior que o máximo</span>";
+            } else {
+                echo "<h3>O número sorteado foi: " . rand($min, $max) . "</h3>";
+            }
+        }
+    ?>
 <script>
     // Seleciona o campo select
     const seletor = document.querySelector('select[name="temperatura1"]');
