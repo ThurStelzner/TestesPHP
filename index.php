@@ -225,15 +225,30 @@
         <button type="submit" name="btn_idade">Enviar</button>
     </form>
     <?php
-        $idade = $_POST['idade'];
         if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['btn_idade'])) {
-                if ($idade > 18) {
-                    echo "<h3>Você é maior de idade</h3>";
-                } elseif ($idade <= 0) {
-                    echo "<span style='color:red;'>Idade inválida</span>";
-                } else {
-                    echo "<h3>Você é menor de idade</h3>";
-                }
+            $idade = $_POST['idade'];
+            if ($idade > 18) {
+                echo "<h3>Você é maior de idade</h3>";
+            } elseif ($idade <= 0) {
+                echo "<span style='color:red;'>Idade inválida</span>";
+            } else {
+                echo "<h3>Você é menor de idade</h3>";
+            }
+        }
+    ?>
+    <h2>Par ou impar</h2>
+    <form method="POST">
+        <input type="number" name="num" placeholder="Digite um número" required>
+        <button type="submit" name="btn_parimpar">Enviar</button>
+    </form>
+    <?php
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['btn_parimpar'])) {
+            $num = $_POST['num'];
+            if ($num % 2 == 0) {
+                echo "<h3>$num é par</h3>";
+            } else {
+                echo "<h3>$num é ímpar</h3>";
+            }
         }
     ?>
 <script>
