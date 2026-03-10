@@ -1,4 +1,7 @@
 <?php
+
+use BcMath\Number;
+
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['btn_video1'])) {
         header('Location: https://www.youtube.com/watch?v=V5XjDpBhlLI');
         exit();
@@ -54,6 +57,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Testes</title>
+    <style>
+        li {
+            margin-left: -35px;
+            list-style: none;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Testes/Aula PHP</h1>
@@ -80,22 +90,24 @@
         }
     ?>
     <h2>Teste redirecionamento</h2>
-
-    <form method="POST">
-        <button type="submit" name="btn_video1">Vídeo1</button>
-        <span>Com PHP</span>
-    </form>
-
-    <button type="button" onclick="window.location.href='https://www.youtube.com/watch?v=Yl5q96YE22s'">Vídeo2</button>
-    <span>Com JS</span>
-
-    <br>
-
-    <a href="https://www.youtube.com/watch?v=YCXtaBXgP5A&t=12s">
-        <button type="submit">Vídeo3</button>
-    </a>
-    <span>Com HTML</span>
-
+    <ul>
+        <li>
+            <form method="POST">
+                <button type="submit" name="btn_video1">Vídeo1</button>
+                <span>Com PHP</span>
+            </form>
+        </li>
+        <li>
+            <button type="button" onclick="window.location.href='https://www.youtube.com/watch?v=Yl5q96YE22s'">Vídeo2</button>
+            <span>Com JS</span>
+        </li>
+        <li>
+            <a href="https://www.youtube.com/watch?v=YCXtaBXgP5A&t=12s">
+                <button type="submit">Vídeo3</button>
+            </a>
+            <span>Com HTML</span>
+        </li>
+    </ul>
     <h3>Explicações</h3>
     <p>O <span style="color: purple;">isset()</span> vem do inglês <span style="color: red;">"is set"</span>, que significa <span style="color: red;">"está definido?"</span> ou <span style="color: red;">"existe?"</span></p>
     <p>Em resumo serve para verificar duas coisas ao mesmo tempo</p>
@@ -114,7 +126,7 @@
 
             echo "<ul>";
             foreach ($dados_salvos as $dados) {
-                echo "<li>".$dados['nome'];
+                echo "<li style = margin-top:10px;>".$dados['nome'];
                 echo "<form method='POST' style='display:inline;'>";
                 echo "<input type='hidden' name='excluir_id' value='" . $dados['id'] . "'>";
                 echo "<button type='submit'>[X]</button>";
@@ -124,5 +136,104 @@
         }
 
     ?>
+    <h2>Calculadora PHP</h2>
+    <form method="POST">
+        <p>1º número
+            <input type="number" name="num1" placeholder="0" required>
+        </p>
+        <p>Operação 
+            <select name="operacao">
+                <option value="0">+</option>
+                <option value="1">-</option>
+                <option value="2">/</option>
+                <option value="3">x</option>
+                <option value="4">^</option>
+                <option value="5">√</option>
+            </select>
+        </p>
+        <p>2º número
+            <input type="number" name="num2" placeholder="0">
+        </p>
+        <button type="submit" name="btn_calculadora">Calcular</button>
+    </form>
+    <?php
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['btn_calculadora'])) {
+            $num1 = $_POST['num1'];
+            $num2 = $_POST['num2'];
+            $operacao = $_POST['operacao'];
+            $total = null;
+
+            switch ($operacao) {
+                case "0":
+                    $total = $num1 + $num2;
+                    break;
+                case "1":
+                    $total = $num1 - $num2;
+                    break;
+                case "2":
+                    $total = ($num2 = 0) ? ($num1 / $num2): "Não é possível dividir por 0";
+                    break;
+                case "3":
+                    $total = $num1 * $num2;
+                    break;
+                case "4":
+                    $total = $num1 ** $num2;
+                    break;  
+                case "5":
+                    // empty() verifica se o campo está vazio // sqrt() faz a raiz quadrada "square root"
+                    $total = (empty($_POST['num2'])) ? (sqrt($num1)): "Digite a raiz apenas no primeiro campo";
+                    break;                
+            }
+            echo "<h3>Resultado: $total</h3>";
+        }
+    ?>
+    <h2>Calcular temperatura</h2>
+    <form method="POST">
+        <p>Converter
+            <select name="temperatura1">
+                <option value="0">Celcius</option>
+                <option value="1">Fahrenheit</option>
+            </select>
+        </p>
+        <p>Temperatura
+            <input type="number" name="valor" placeholder="35º" required>
+        </p>
+        <p>Para <span id="destino">Fahrenheit</span></p>
+        <button name="btn_temperatura">Converter</button>
+    </form>
+    <?php
+        if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['btn_temperatura'])) {
+            $temp1 = $_POST['temperatura1'];
+            $valor = $_POST['valor'];
+            $simbolo = null;
+            $resultado = 0;
+
+            switch ($temp1) {
+                case "0":
+                    $resultado = ($valor * 1.8) + 32;
+                    $simbolo = "ºF";
+                    break;
+                case "1":
+                    $resultado = ($valor - 32) / 1.8;
+                    $simbolo = "ºC";
+                    break;
+            }
+            echo "<h3>Valor Convertido:" . number_format($resultado, 2, ",", ".") . $simbolo . "</h3>";
+        }
+    ?>
+<script>
+    // Seleciona o campo select
+    const seletor = document.querySelector('select[name="temperatura1"]');
+    // Seleciona o local onde queremos mudar o texto
+    const destino = document.getElementById('destino');
+    // Adiciona um "ouvinte" de eventos 
+    seletor.addEventListener('change', function() {
+        if (this.value === "0") {
+            destino.innerText = "Fahrenheit";
+        } else {
+            destino.innerText = "Celsius";
+        }
+    });
+</script>
 </body>
 </html>
