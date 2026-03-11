@@ -47,6 +47,39 @@
             exit();
         }
     }
+    $comentarios = 'comentarios.json';
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['btn_comentario'])) {
+            $nome = !empty($_POST['nome']) ? $_POST['nome'] : "Guest";
+            $dado = ["id" => time(), "Nome"=> $nome, "Comentou" => $_POST['comentario']];
+
+            if (file_exists($comentarios)) {
+                $conteudo = file_get_contents($comentarios);
+                $lista = json_decode($conteudo, true);
+            } else {
+                $lista = [];
+            }
+
+            $lista[] = $dado;
+            $texto_json = json_encode($lista, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+            file_put_contents($comentarios, $texto_json);
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['btn_excluir_comentario'])) {
+        $id_excluir = $_POST['id'] ?? null;
+        $lista = json_decode(file_get_contents($comentarios), true);
+
+        foreach ($lista as $chave => $item) {
+            if ($chave == $id_excluir) {
+                unset($lista[$chave]);
+                $lista = array_values($lista);
+            }
+        }
+        file_put_contents($comentarios, json_encode($lista, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -266,7 +299,7 @@
             }
         }
     ?>
-    <h2>Contar até 0</h2>
+    <h2>Contar</h2>
     <form method="POST">
         <input type="number" name="num" min="0" required>
         <select name="ordem">
@@ -312,6 +345,31 @@
             } else {
                 echo "<h3>O número sorteado foi: " . rand($min, $max) . "</h3>";
             }
+        }
+    ?>
+    <h2>Sistema de comentários</h2>
+    <form method="POST">
+        <p>Nome:
+            <input type="text" name="nome" placeholder="Seu nome aqui">
+        </p>
+        <p>Comentário
+            <input type="text" name="comentario" placeholder="Seu comentário" required>
+        </p>
+        <button type="submit" name="btn_comentario">Enviar Comentário</button>
+    </form>
+    <?php
+        if (file_exists($comentarios)) {
+            $mostrar_dados = file_get_contents($comentarios);
+            $comentarios_salvos = json_decode($mostrar_dados, true);
+            echo "<ul>";
+                foreach ($comentarios_salvos as $chave => $comentario) { 
+                    echo "<li>". "<h4>" . $comentario['Nome']. "</h4>" . " Comentou:<br>" . $comentario['Comentou'];
+                    echo "<form method='POST' style='display:inline;>'";
+                    echo "<input type='hidden' name='id' value='$chave'>";
+                    echo "<button type='submit' name='btn_excluir_comentario'>X</button>";
+                    echo "</form></li>";
+                }
+            echo "</ul>";
         }
     ?>
 <script>
